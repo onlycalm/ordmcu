@@ -50,6 +50,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     core/src/stm32f1xx_it.c
     core/src/system_stm32f1xx.c
     core/src/stm32f1xx_hal_msp.c
+    core/src/syscalls.c
 
     # HAL 库核心文件
     drv/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
