@@ -17,9 +17,10 @@ enable_language(C ASM)
 
 add_executable(${CMAKE_PROJECT_NAME})
 
-add_subdirectory(strtup)
 add_subdirectory(core)
 add_subdirectory(drv)
+add_subdirectory(if)
+add_subdirectory(strtup)
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols.
