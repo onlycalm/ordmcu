@@ -80,21 +80,20 @@ static u32 s_au32SpdMap[] = {
 
 er erInitGpio(const TGpio ktGpio)
 {
+    GPIO_InitTypeDef tGpio = {0};
     er erRtn = ER_SUC;
 
-    GPIO_InitTypeDef tGpio = {0};
+    Asrt((u32)ktGpio.ePt < u32GetArrSz(s_atPortMap));
+    Asrt((u32)ktGpio.ePin < u32GetArrSz(s_au32PinMap));
+    Asrt((u32)ktGpio.eMd < u32GetArrSz(s_au32MdMap));
+    Asrt((u32)ktGpio.ePul < u32GetArrSz(s_au32PulMap));
+    Asrt((u32)ktGpio.eSpd < u32GetArrSz(s_au32SpdMap));
 
-    assert_param(ktGpio.ePt < GetArrSz(s_atPortMap));
-    assert_param(ktGpio.ePin < GetArrSz(s_au32PinMap));
-    assert_param(ktGpio.eMd < GetArrSz(s_au32MdMap));
-    assert_param(ktGpio.ePul < GetArrSz(s_au32PulMap));
-    assert_param(ktGpio.eSpd < GetArrSz(s_au32SpdMap));
-
-    if((ktGpio.ePt < GetArrSz(s_atPortMap)) &&
-       (ktGpio.ePin < GetArrSz(s_au32PinMap)) &&
-       (ktGpio.eMd < GetArrSz(s_au32MdMap)) &&
-       (ktGpio.ePul < GetArrSz(s_au32PulMap)) &&
-       (ktGpio.eSpd < GetArrSz(s_au32SpdMap)))
+    if(((u32)ktGpio.ePt < u32GetArrSz(s_atPortMap)) &&
+       ((u32)ktGpio.ePin < u32GetArrSz(s_au32PinMap)) &&
+       ((u32)ktGpio.eMd < u32GetArrSz(s_au32MdMap)) &&
+       ((u32)ktGpio.ePul < u32GetArrSz(s_au32PulMap)) &&
+       ((u32)ktGpio.eSpd < u32GetArrSz(s_au32SpdMap)))
     {
         tGpio.Pin = s_au32PinMap[ktGpio.ePin];
         tGpio.Mode = s_au32MdMap[ktGpio.eMd];
@@ -111,14 +110,24 @@ er erInitGpio(const TGpio ktGpio)
     return erRtn;
 }
 
-er erInitGpioGrp(const TGpio* const kpktGpio, u16 u16Num)
+er erInitGpioGrp(const TGpio* const kpktGpio, u16 u16ArrSz)
 {
     u16 u16Idx = 0u;
     er erRtn = ER_SUC;
 
-    for(u16Idx = 0u; (u16Idx < u16Num) && (erRtn != ER_SUC); u16Idx++)
+    Asrt(kpktGpio != NULL);
+    Asrt(u16ArrSz > 0u);
+
+    if((kpktGpio != NULL) && (u16ArrSz > 0))
     {
-        erRtn = erInitGpio(kpktGpio[u16Idx]);
+        for(u16Idx = 0u; (u16Idx < u16ArrSz) && (erRtn != ER_SUC); u16Idx++)
+        {
+            erRtn = erInitGpio(kpktGpio[u16Idx]);
+        }
+    }
+    else
+    {
+        erRtn = ER_SW_INV_PARAM;
     }
 
     return erRtn;
@@ -128,11 +137,11 @@ er erGetGpioLv(const EPort kePt, const EPin kePin, EGpioLv* const kpkeGpioLv)
 {
     er erRtn = ER_SUC;
 
-    assert_param(kePt < GetArrSz(s_atPortMap));
-    assert_param(kePin < GetArrSz(s_au32PinMap));
-    assert_param(kpkeGpioLv != NULL);
+    Asrt((u32)kePt < u32GetArrSz(s_atPortMap));
+    Asrt((u32)kePin < u32GetArrSz(s_au32PinMap));
+    Asrt(kpkeGpioLv != NULL);
 
-    if((kePt < GetArrSz(s_atPortMap)) && (kePin < GetArrSz(s_au32PinMap)) &&
+    if(((u32)kePt < u32GetArrSz(s_atPortMap)) && ((u32)kePin < u32GetArrSz(s_au32PinMap)) &&
        (kpkeGpioLv != NULL))
     {
         *kpkeGpioLv =
@@ -150,10 +159,11 @@ er erSetGpioLv(const EPort kePt, const EPin kePin, const EGpioLv keGpioLv)
 {
     er erRtn = ER_SUC;
 
-    assert_param(kePt < GetArrSz(s_atPortMap));
-    assert_param(kePin < GetArrSz(s_au32PinMap));
+    Asrt((u32)kePt < u32GetArrSz(s_atPortMap));
+    Asrt((u32)kePin < u32GetArrSz(s_au32PinMap));
+    Asrt((u32)keGpioLv < (u32)GPIO_LV_MAX);
 
-    if((kePt < GetArrSz(s_atPortMap)) && (kePin < GetArrSz(s_au32PinMap)))
+    if(((u32)kePt < u32GetArrSz(s_atPortMap)) && ((u32)kePin < u32GetArrSz(s_au32PinMap)))
     {
         HAL_GPIO_WritePin(s_atPortMap[kePt],
                           s_au32PinMap[kePin],
@@ -171,10 +181,10 @@ er erTglGpioLv(const EPort kePt, const EPin kePin)
 {
     er erRtn = ER_SUC;
 
-    assert_param(kePt < GetArrSz(s_atPortMap));
-    assert_param(kePin < GetArrSz(s_au32PinMap));
+    Asrt((u32)kePt < u32GetArrSz(s_atPortMap));
+    Asrt((u32)kePin < u32GetArrSz(s_au32PinMap));
 
-    if((kePt < GetArrSz(s_atPortMap)) && (kePin < GetArrSz(s_au32PinMap)))
+    if(((u32)kePt < u32GetArrSz(s_atPortMap)) && ((u32)kePin < u32GetArrSz(s_au32PinMap)))
     {
         HAL_GPIO_TogglePin(s_atPortMap[kePt], s_au32PinMap[kePin]);
     }

@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
+#include "com.h"
 #include "main.h"
 #include "err.h"
 #include "gpio.h"
@@ -81,7 +82,6 @@ void Software_DelayMs(uint32_t ms)
  */
 int main(void)
 {
-    uint8_t u8Idx = 0u;
     EGpioLv eGpioLv = GPIO_LV_RST;
     TGpio ktGpio[] = {
         // PB5.
@@ -110,44 +110,16 @@ int main(void)
         },
     };
 
-    /* USER CODE BEGIN 1 */
-
-    /* USER CODE END 1 */
-
-    /* MCU
-     * Configuration--------------------------------------------------------*/
-
-    /* Reset of all peripherals, Initializes the Flash interface and the
-     * Systick. */
     HAL_Init();
-
-    /* USER CODE BEGIN Init */
-
-    /* USER CODE END Init */
-
-    /* Configure the system clock */
     SystemClock_Config();
 
-    /* USER CODE BEGIN SysInit */
-
-    /* USER CODE END SysInit */
-
-    /* Initialize all configured peripherals */
-    /* USER CODE BEGIN 2 */
     /* Enable GPIO Clock. */
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOE_CLK_ENABLE();
 
-    for(u8Idx = 0u; u8Idx < (sizeof(ktGpio) / sizeof(ktGpio[0])); u8Idx++)
-    {
-        erInitGpio(ktGpio[u8Idx]);
-    }
+    erInitGpioGrp(ktGpio, u32GetArrSz(ktGpio));
 
-    /* USER CODE END 2 */
-
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
     while(1)
     {
         /* USER CODE END WHILE */
@@ -158,10 +130,7 @@ int main(void)
             erTglGpioLv(PORT_E, PIN_5);
             Software_DelayMs(100);
         }
-
-        /* USER CODE BEGIN 3 */
     }
-    /* USER CODE END 3 */
 }
 
 /**

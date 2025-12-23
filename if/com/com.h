@@ -15,8 +15,21 @@
 extern "C" {
 #endif
 
-#define GetArrSz(Arr) (sizeof(Arr) / sizeof((Arr)[0]))
-#define GetByNum(Var) (sizeof(Var))
+#if DEBUG
+#define Asrt(expr) \
+{ \
+    (void)printf("Assertion passed: %s, file %s, line %d\n", \
+                  #expr, \
+                  __FILE__, \
+                  __LINE__); \
+    while(1); \
+} while(0)
+#else
+#define Asrt(expr) ((void)0)
+#endif
+
+#define u32GetArrSz(Arr) ((u32)(sizeof(Arr) / sizeof((Arr)[0])))
+#define u32GetBySz(Var) ((u32)sizeof((Var)))
 
 #ifdef __cplusplus
 }

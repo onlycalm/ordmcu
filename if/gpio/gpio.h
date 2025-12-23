@@ -32,6 +32,8 @@ typedef enum
     PORT_I,
     PORT_J,
     PORT_K,
+
+    PORT_MAX, /*!< Maximum port value, not a valid port. */
 } EPort;
 
 typedef enum
@@ -52,6 +54,8 @@ typedef enum
     PIN_13,
     PIN_14,
     PIN_15,
+
+    PIN_MAX, /*!< Maximum pin value, not a valid pin. */
 } EPin;
 
 typedef enum
@@ -74,6 +78,8 @@ typedef enum
     GPIO_MD_EVT_FLG,    /*!< External Event Mode with Falling edge trigger
                              detection. */
     GPIO_MD_EVT_RSN_FLG,
+
+    GPIO_MD_EVT_MAX, /*!< Maximum mode value, not a valid mode. */
 } EGpioMd;
 
 typedef enum
@@ -81,6 +87,8 @@ typedef enum
     GPIO_PUL_NOPL,
     GPIO_PUL_UP,
     GPIO_PUL_DN,
+
+    GPIO_PUL_MAX, /*!< Maximum pull value, not a valid pull. */
 } EGpioPul;
 
 typedef enum
@@ -88,12 +96,16 @@ typedef enum
     GPIO_SPD_LW, /*!< Low speed. */
     GPIO_SPD_MD, /*!< Medium speed. */
     GPIO_SPD_HI, /*!< High speed. */
+
+    GPIO_SPD_MAX, /*!< Maximum speed value, not a valid speed. */
 } EGpioSpd;
 
 typedef enum
 {
     GPIO_LV_RST, /*!< Reset the pin output to low level. */
     GPIO_LV_SET, /*!< Set the pin output to high level. */
+
+    GPIO_LV_MAX, /*!< Maximum level value, not a valid level. */
 } EGpioLv;
 
 typedef struct
@@ -106,6 +118,7 @@ typedef struct
 } TGpio;
 
 extern er erInitGpio(const TGpio ktGpio);
+extern er erInitGpioGrp(const TGpio* const kpktGpio, u16 u16ArSz);
 extern er erGetGpioLv(const EPort kePt, const EPin kePin, EGpioLv* const kpkeGpioLv);
 extern er erSetGpioLv(const EPort kePt, const EPin kePin,
                       const EGpioLv keGpioLv);
