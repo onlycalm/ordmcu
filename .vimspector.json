@@ -1,0 +1,109 @@
+{
+  "$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json",
+  "configurations": {
+    "STM32 (attach to OpenOCD)": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "name": "STM32 (attach to OpenOCD)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceRoot}/build/ordmcu.elf",
+        "cwd": "${workspaceRoot}",
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb-multiarch",
+        "miDebuggerArgs": "",
+        "miDebuggerServerAddress": "localhost:3333",
+        "targetArchitecture": "arm",
+        "stopAtEntry": false,
+        "customLaunchSetupCommands": [
+          {
+            "text": "target extended-remote localhost:3333"
+          }
+        ],
+        "setupCommands": [
+          {
+            "description": "Enable pretty printing",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          },
+          {
+            "description": "Set target architecture",
+            "text": "set architecture arm",
+            "ignoreFailures": true
+          },
+          {
+            "description": "Ensure program is known to debugger",
+            "text": "file ${workspaceRoot}/build/ordmcu.elf",
+            "ignoreFailures": true
+          }
+        ],
+        "logging": {
+          "trace": true,
+          "engineLogging": true,
+          "programOutput": true,
+          "exceptions": false
+        }
+      }
+    },
+
+    "STM32 (program then attach)": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "name": "STM32 (auto OpenOCD)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceRoot}/build/ordmcu.elf",
+        "cwd": "${workspaceRoot}",
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb-multiarch",
+        "miDebuggerArgs": "",
+        "miDebuggerServerAddress": "localhost:3333",
+        "targetArchitecture": "arm",
+        "serverLaunchCommand": [
+          "openocd",
+          "-f",
+          "${workspaceRoot}/scr/openocd/jlink-swd-stm32f103.cfg"
+        ],
+        "serverLaunchTimeout": 20000,
+        "stopAtEntry": false,
+        "customLaunchSetupCommands": [
+          {
+            "text": "target extended-remote localhost:3333"
+          },
+          {
+            "text": "monitor reset halt"
+          },
+          {
+            "text": "load"
+          },
+          {
+            "text": "break main"
+          }
+        ],
+        "setupCommands": [
+          {
+            "description": "Enable pretty printing",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          },
+          {
+            "description": "Set target architecture",
+            "text": "set architecture arm",
+            "ignoreFailures": true
+          },
+          {
+            "description": "Ensure program is known to debugger",
+            "text": "file ${workspaceRoot}/build/ordmcu.elf",
+            "ignoreFailures": true
+          }
+        ],
+        "logging": {
+          "trace": true,
+          "engineLogging": true,
+          "programOutput": true,
+          "exceptions": false
+        }
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 #if DEBUG
+#error test
 #define Asrt(expr) \
 { \
     (void)printf("Assertion passed: %s, file %s, line %d\n", \
