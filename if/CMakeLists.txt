@@ -14,6 +14,7 @@ if(VENDOR STREQUAL "stm32")
     if(SERIES STREQUAL "f1xx")
         set(GPIO_SRC_DIR gpio/stm32/f1xx)
         set(CLK_SRC_DIR clk/stm32/f1xx)
+        set(INTR_SRC_DIR intr/stm32/f1xx)
     else()
         message(FATAL_ERROR "Unsupported STM32 series: ${SERIES}.")
     endif()
@@ -24,11 +25,13 @@ endif()
 set(COM_INC_DIR com)
 set(GPIO_INC_DIR gpio)
 set(CLK_INC_DIR clk)
+set(INTR_INC_DIR intr)
 
 file(GLOB GPIO_SRC_ALL
     ${COM_INC_DIR}/*.c
     ${GPIO_SRC_DIR}/*.c
     ${CLK_SRC_DIR}/*.c
+    ${INTR_SRC_DIR}/*.c
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${GPIO_SRC_ALL})
@@ -37,4 +40,5 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${COM_INC_DIR}
     ${GPIO_INC_DIR}
     ${CLK_INC_DIR}
+    ${INTR_INC_DIR}
 )

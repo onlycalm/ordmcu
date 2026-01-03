@@ -1,9 +1,12 @@
+#include <stdbool.h>
 #include <stdint.h>
-#include "com.h"
+#include "typ.h"
 #include "err.h"
+#include "com.h"
 #include "main.h"
 #include "gpio.h"
 #include "clk.h"
+#include "intr.h"
 #include "stm32f1xx_hal_gpio.h"
 
 void SystemClock_Config(void);
@@ -73,14 +76,15 @@ int main(void)
     };
 
     __enable_irq();
+    erSetIntrPriMode(INTR_PRI_MOD4);
     HAL_Init();
     SystemClock_Config();
 
     erSetClkPtGrp(kaeClkPt, u32GetArrSz(kaeClkPt));
     erInitPinGrp(katPin, u32GetArrSz(katPin));
 
-    HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 1);
-    HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+    erSetIrqnPriPin(IRQN_PIN0, 0u, 0u);
+    erEnIrqnPin(IRQN_PIN0, true);
 
     while(1)
     {

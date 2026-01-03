@@ -2,7 +2,7 @@
 #define __CLK_H__
 
 #ifdef __cplusplus
-extern "c"
+extern "C"
 {
 #endif
 
