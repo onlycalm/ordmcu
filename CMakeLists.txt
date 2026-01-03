@@ -27,6 +27,9 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     STM32F103xE
     USE_HAL_DRIVER
     HSE_VALUE=8000000
+    ER_DOM=ER_DOM_BAL_CAR        # Product balance car.
+    ER_SUB_DOM=ER_SUB_DOM_ORDMCU # Project ordmcu.
+    DEBUG
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

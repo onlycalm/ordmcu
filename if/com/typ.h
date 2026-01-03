@@ -12,15 +12,25 @@
 #define __TYP_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include <stdint.h>
+
+#ifndef NULL
+#ifdef __cplusplus
+#define NULL 0
+#else
+#define NULL ((void*)0)
+#endif
+#endif // NULL
 
 typedef uint32_t er;
 typedef uint32_t u32;
 typedef uint16_t u16;
 typedef uint8_t  u8;
+typedef uintptr_t uptr;
 
 #ifdef __cplusplus
 }

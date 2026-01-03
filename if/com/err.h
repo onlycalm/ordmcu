@@ -13,12 +13,20 @@
 #ifndef __ERR_H__
 #define __ERR_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "typ.h"
 
-#define ER_SUC 0u
+#ifndef ER_DOM
+#error Please define ER_DOM
+#endif
 
-#define ER_DOM ER_DOM_BAL_CAR
-#define ER_SUB_DOM ER_SUB_DOM_ORDMCU
+#ifndef ER_SUB_DOM
+#error Please define ER_SUB_DOM
+#endif
 
 #define u32PkgEr(eLv, eCd, eCls, eMod, eSubDom, eDom) \
     ((((u32)(eLv)&0x07u) << 0) | (((u32)(eCd)&0x3Fu) << 3) | \
@@ -35,15 +43,23 @@
 #define u32PkgClsEr(eLv, eCd, eCls) u32PkgEr((eLv), (eCd), (eCls), (ER_MOD), \
                                              (ER_SUB_DOM), (ER_DOM))
 
+// Error code.
+#define ER_SUC 0u
+
 // Software Class.
-#define ER_SW_INV_PARAM u32PkgClsEr((ER_LV_ER), (ER_CD_SW_INV_PARAM), (ER_CLS_SW))
+#define ER_SW_UNKN \
+    u32PkgClsEr((ER_LV_ER), (ER_CD_SW_UNKN), (ER_CLS_SW))
+#define ER_SW_NUL_PTR \
+    u32PkgClsEr((ER_LV_ER), (ER_CD_SW_NUL_PTR), (ER_CLS_SW))
+#define ER_SW_INV_PARAM \
+    u32PkgClsEr((ER_LV_ER), (ER_CD_SW_INV_PARAM), (ER_CLS_SW))
 
 typedef union
 {
     struct
     {
-        u32 btLv     : 3; // [2:0] Error Level.
-        u32 btCd     : 6; // [8:3] Error Code.
+        u32 btLv     : 3; // [2:0] Error level.
+        u32 btCd     : 6; // [8:3] Error code.
         u32 btCls    : 5; // [13:9] Class.
         u32 btMod    : 8; // [21:14] Module ID.
         u32 btSubDom : 4; // [25:22] Sub-Domain.
@@ -64,9 +80,9 @@ typedef enum
 
 typedef enum
 {
-    ER_CD_ACK_TMOT,   // Timeout Error.
-    ER_CD_TX_BUF_FUL, // Transmit Buffer Full.
-    ER_CD_RX_BUF_FUL, // Receive Buffer Full.
+    ER_CD_COMM_ACK_TMOT,   // Timeout Error.
+    ER_CD_COMM_TX_BUF_FUL, // Transmit Buffer Full.
+    ER_CD_COMM_RX_BUF_FUL, // Receive Buffer Full.
 } EErCdComm;
 
 typedef enum
@@ -101,7 +117,8 @@ typedef enum
 
 typedef enum
 {
-    ER_CD_SW_NUL_POINT, // NULL Pointer.
+    ER_CD_SW_UNKN,      // Unknown.
+    ER_CD_SW_NUL_PTR,   // Null Pointer.
     ER_CD_SW_INV_PARAM, // Invalid Parameter.
 } EErCdSw;
 
@@ -142,11 +159,15 @@ typedef enum
 typedef enum
 {
     ER_MOD_GPIO, // Gpio module.
+    ER_MOD_CLK,  // Clk module.
+    ER_MOD_COM,  // Common module.
 } EErMod;
 
 typedef enum
 {
     ER_SUB_DOM_ORDMCU,
+    ER_SUB_DOM_ORDRTOS,
+    ER_SUB_DOM_ORDBOT,
 } EErSubDom;
 
 typedef enum
@@ -154,5 +175,9 @@ typedef enum
     ER_DOM_ORD_BOT,
     ER_DOM_BAL_CAR,
 } EErDom;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __ERR_H__

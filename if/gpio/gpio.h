@@ -14,27 +14,28 @@
 #define __GPIO_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include "typ.h"
 
 typedef enum
 {
-    PORT_A,
-    PORT_B,
-    PORT_C,
-    PORT_D,
-    PORT_E,
-    PORT_F,
-    PORT_G,
-    PORT_H,
-    PORT_I,
-    PORT_J,
-    PORT_K,
+    PT_A,
+    PT_B,
+    PT_C,
+    PT_D,
+    PT_E,
+    PT_F,
+    PT_G,
+    PT_H,
+    PT_I,
+    PT_J,
+    PT_K,
 
-    PORT_MAX, /*!< Maximum port value, not a valid port. */
-} EPort;
+    PT_MAX, /*!< Maximum port value, not a valid port. */
+} EPt;
 
 typedef enum
 {
@@ -60,69 +61,68 @@ typedef enum
 
 typedef enum
 {
-    GPIO_MD_INP,     /*!< Input Floating Mode. */
-    GPIO_MD_OUTP_PP, /*!< Output Push Pull Mode. */
-    GPIO_MD_OUTP_OD, /*!< Output Open Drain Mode. */
-    GPIO_MD_AF_PP,   /*!< Alternate Function Push Pull Mode. */
-    GPIO_MD_AF_OD,   /*!< Alternate Function Open Drain Mode. */
-    GPIO_MD_AF_INP,  /*!< Alternate Function Input Mode. */
-    GPIO_MD_ANLG,    /*!< Analog Mode. */
-    GPIO_MD_IT_RSN,  /*!< External Interrupt Mode with Rising edge trigger
-                          detection. */
-    GPIO_MD_IT_FLG,  /*!< External Interrupt Mode with Falling edge trigger
-                          detection. */
-    GPIO_MD_IT_RSN_FLG, /*!< External Interrupt Mode with
-                             Rising/Falling edge trigger detection. */
-    GPIO_MD_EVT_RSN,    /*!< External Event Mode with Rising edge trigger
-                             detection. */
-    GPIO_MD_EVT_FLG,    /*!< External Event Mode with Falling edge trigger
-                             detection. */
-    GPIO_MD_EVT_RSN_FLG,
+    PIN_MD_INP,        /*!< Input Floating Mode. */
+    PIN_MD_OUTP_PP,    /*!< Output Push Pull Mode. */
+    PIN_MD_OUTP_OD,    /*!< Output Open Drain Mode. */
+    PIN_MD_AF_PP,      /*!< Alternate Function Push Pull Mode. */
+    PIN_MD_AF_OD,      /*!< Alternate Function Open Drain Mode. */
+    PIN_MD_AF_INP,     /*!< Alternate Function Input Mode. */
+    PIN_MD_ANLG,       /*!< Analog Mode. */
+    PIN_MD_IT_RSN,     /*!< External Interrupt Mode with Rising edge trigger
+                            detection. */
+    PIN_MD_IT_FLG,     /*!< External Interrupt Mode with Falling edge trigger
+                            detection. */
+    PIN_MD_IT_RSN_FLG, /*!< External Interrupt Mode with
+                            Rising/Falling edge trigger detection. */
+    PIN_MD_EVT_RSN,    /*!< External Event Mode with Rising edge trigger
+                            detection. */
+    PIN_MD_EVT_FLG,    /*!< External Event Mode with Falling edge trigger
+                            detection. */
+    PIN_MD_EVT_RSN_FLG,
 
-    GPIO_MD_EVT_MAX, /*!< Maximum mode value, not a valid mode. */
-} EGpioMd;
-
-typedef enum
-{
-    GPIO_PUL_NOPL,
-    GPIO_PUL_UP,
-    GPIO_PUL_DN,
-
-    GPIO_PUL_MAX, /*!< Maximum pull value, not a valid pull. */
-} EGpioPul;
+    PIN_MD_EVT_MAX, /*!< Maximum mode value, not a valid mode. */
+} EPinMd;
 
 typedef enum
 {
-    GPIO_SPD_LW, /*!< Low speed. */
-    GPIO_SPD_MD, /*!< Medium speed. */
-    GPIO_SPD_HI, /*!< High speed. */
+    PIN_PUL_NONE,
+    PIN_PUL_UP,
+    PIN_PUL_DN,
 
-    GPIO_SPD_MAX, /*!< Maximum speed value, not a valid speed. */
-} EGpioSpd;
+    PIN_PUL_MAX, /*!< Maximum pull value, not a valid pull. */
+} EPinPul;
 
 typedef enum
 {
-    GPIO_LV_RST, /*!< Reset the pin output to low level. */
-    GPIO_LV_SET, /*!< Set the pin output to high level. */
+    PIN_SPD_LW, /*!< Low speed. */
+    PIN_SPD_MD, /*!< Medium speed. */
+    PIN_SPD_HI, /*!< High speed. */
 
-    GPIO_LV_MAX, /*!< Maximum level value, not a valid level. */
-} EGpioLv;
+    PIN_SPD_MAX, /*!< Maximum speed value, not a valid speed. */
+} EPinSpd;
+
+typedef enum
+{
+    PIN_LV_RST, /*!< Reset the pin output to low level. */
+    PIN_LV_SET, /*!< Set the pin output to high level. */
+
+    PIN_LV_MAX, /*!< Maximum level value, not a valid level. */
+} EPinLv;
 
 typedef struct
 {
-    EPort ePt;
+    EPt ePt;
     EPin ePin;
-    EGpioMd eMd;
-    EGpioPul ePul;
-    EGpioSpd eSpd;
-} TGpio;
+    EPinMd eMd;
+    EPinPul ePul;
+    EPinSpd eSpd;
+} TPin;
 
-extern er erInitGpio(const TGpio ktGpio);
-extern er erInitGpioGrp(const TGpio* const kpktGpio, u16 u16ArSz);
-extern er erGetGpioLv(const EPort kePt, const EPin kePin, EGpioLv* const kpkeGpioLv);
-extern er erSetGpioLv(const EPort kePt, const EPin kePin,
-                      const EGpioLv keGpioLv);
-extern er erTglGpioLv(const EPort kePt, const EPin kePin);
+extern er erInitPin(const TPin ktPin);
+extern er erInitPinGrp(const TPin* const kpktPin, const u16 ku16ArSz);
+extern er erGetPinLv(const EPt kePt, const EPin kePin, EPinLv* const kpkePinLv);
+extern er erSetPinLv(const EPt kePt, const EPin kePin, const EPinLv kePinLv);
+extern er erTglPinLv(const EPt kePt, const EPin kePin);
 
 #ifdef __cplusplus
 }
