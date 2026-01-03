@@ -1,8 +1,9 @@
 #include <stdint.h>
 #include "com.h"
-#include "main.h"
 #include "err.h"
+#include "main.h"
 #include "gpio.h"
+#include "clk.h"
 #include "stm32f1xx_hal_gpio.h"
 
 void SystemClock_Config(void);
@@ -20,70 +21,111 @@ void Software_DelayMs(uint32_t ms)
     }
 }
 
+void EXTI0_IRQHandler(void)
+{
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if(GPIO_Pin == GPIO_PIN_0)
+    {
+        erTglPinLv(PT_E, PIN_5);
+    }
+    else
+    {
+        // Do nothing.
+    }
+}
+
 int main(void)
 {
-    EGpioLv eGpioLv = GPIO_LV_RST;
-    TGpio ktGpio[] = {
+    EPinLv ePinLv = PIN_LV_RST;
+    const TPin katPin[] =
+    {
         {
-            .ePt = PORT_B,
+            .ePt = PT_B,
             .ePin = PIN_5,
-            .eMd = GPIO_MD_OUTP_PP,
-            .ePul = GPIO_PUL_DN,
-            .eSpd = GPIO_SPD_LW,
+            .eMd = PIN_MD_OUTP_PP,
+            .ePul = PIN_PUL_DN,
+            .eSpd = PIN_SPD_LW,
         },
         {
-            .ePt = PORT_E,
+            .ePt = PT_E,
             .ePin = PIN_5,
-            .eMd = GPIO_MD_OUTP_PP,
-            .ePul = GPIO_PUL_DN,
-            .eSpd = GPIO_SPD_LW,
+            .eMd = PIN_MD_OUTP_PP,
+            .ePul = PIN_PUL_DN,
+            .eSpd = PIN_SPD_LW,
         },
         {
-            .ePt = PORT_A,
+            .ePt = PT_A,
             .ePin = PIN_0,
-            .eMd = GPIO_MD_INP,
-            .ePul = GPIO_PUL_NOPL,
-            .eSpd = GPIO_SPD_LW,
+            .eMd = PIN_MD_IT_RSN,
+            .ePul = PIN_PUL_DN,
+            .eSpd = PIN_SPD_LW,
         },
     };
+    const EClkPt kaeClkPt[] =
+    {
+        CLK_PT_A,
+        CLK_PT_B,
+        CLK_PT_E,
+    };
 
+    __enable_irq();
     HAL_Init();
     SystemClock_Config();
 
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOE_CLK_ENABLE();
+    erSetClkPtGrp(kaeClkPt, u32GetArrSz(kaeClkPt));
+    erInitPinGrp(katPin, u32GetArrSz(katPin));
 
-    erInitGpioGrp(ktGpio, u32GetArrSz(ktGpio));
+    HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 1);
+    HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
     while(1)
     {
-        if((erGetGpioLv(PORT_A, PIN_0, &eGpioLv) == ER_SUC) &&
-           (eGpioLv == GPIO_LV_SET))
+        if((erGetPinLv(PT_A, PIN_0, &ePinLv) == ER_SUC) &&
+           (ePinLv == PIN_LV_SET))
         {
-            erTglGpioLv(PORT_B, PIN_5);
-            erTglGpioLv(PORT_E, PIN_5);
-            Software_DelayMs(20);
+            erTglPinLv(PT_B, PIN_5);
+            Software_DelayMs(80);
+        }
+        else
+        {
+            // Do nothing.
         }
     }
 }
 
 void SystemClock_Config(void)
 {
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_ClkInitTypeDef clkinitstruct = {0};
+    RCC_OscInitTypeDef oscinitstruct = {0};
 
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-    while(HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK);
+    /* Enable HSE Oscillator and activate PLL with HSE as source */
+    oscinitstruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    oscinitstruct.HSEState = RCC_HSE_ON;
+    oscinitstruct.HSEPredivValue = RCC_HSE_PREDIV_DIV2;
+    oscinitstruct.PLL.PLLState = RCC_PLL_ON;
+    oscinitstruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    oscinitstruct.PLL.PLLMUL = RCC_PLL_MUL6;
+    if(HAL_RCC_OscConfig(&oscinitstruct) != HAL_OK)
+    {
+        /* Initialization Error */
+        while(1);
+    }
 
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
-                                  RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-    while(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK);
+    /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
+     clocks dividers */
+    clkinitstruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK |
+                               RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+    clkinitstruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    clkinitstruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    clkinitstruct.APB2CLKDivider = RCC_HCLK_DIV1;
+    clkinitstruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    if(HAL_RCC_ClockConfig(&clkinitstruct, FLASH_LATENCY_0) != HAL_OK)
+    {
+        /* Initialization Error */
+        while(1);
+    }
 }

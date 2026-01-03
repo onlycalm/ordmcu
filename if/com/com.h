@@ -12,25 +12,44 @@
 #define __COM_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
+#include "comp.h"
+#include "typ.h"
+
+#define SetBit(Var, Msk) ((Var) |= (Msk))
+#define ClrBit(Var, Msk) ((Var) &= ~(Msk))
+#define RdBit(Var, Msk) ((Var) & (Msk))
+
 #if DEBUG
-#error test
 #define Asrt(expr) \
-{ \
-    (void)printf("Assertion passed: %s, file %s, line %d\n", \
-                  #expr, \
-                  __FILE__, \
-                  __LINE__); \
-    while(1); \
-} while(0)
+    do { \
+        if(!(expr)) \
+        { \
+            while(1); \
+        } \
+    } \
+    while(0)
 #else
 #define Asrt(expr) ((void)0)
 #endif
 
-#define u32GetArrSz(Arr) ((u32)(sizeof(Arr) / sizeof((Arr)[0])))
+#define u32GetArrSz(aArr) ((u32)(sizeof((aArr)) / sizeof((aArr)[0])))
 #define u32GetBySz(Var) ((u32)sizeof((Var)))
+
+FORCE_INLINE
+void vidWrReg32(u32 u32Adr, u32 u32Val)
+{
+    *(volatile u32*)u32Adr = u32Val;
+}
+
+FORCE_INLINE
+u32 u32RdReg32(u32 u32Adr)
+{
+    return *(volatile u32*)u32Adr;
+}
 
 #ifdef __cplusplus
 }
