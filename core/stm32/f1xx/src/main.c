@@ -68,23 +68,25 @@ int main(void)
             .eSpd = PIN_SPD_LW,
         },
     };
-    const EClkPt kaeClkPt[] =
+    const EApbClk kaeClk[] =
     {
         CLK_PT_A,
         CLK_PT_B,
         CLK_PT_E,
     };
+    const TIntr atIntr[] =
+    {
+        {true, INTR_NUM_PIN0, 0u, 0u},
+    };
 
-    __enable_irq();
+    erEnAlIntr(true);
     erSetIntrPriMode(INTR_PRI_MOD4);
     HAL_Init();
     SystemClock_Config();
 
-    erSetClkPtGrp(kaeClkPt, u32GetArrSz(kaeClkPt));
-    erInitPinGrp(katPin, u32GetArrSz(katPin));
-
-    erSetIrqnPriPin(IRQN_PIN0, 0u, 0u);
-    erEnIrqnPin(IRQN_PIN0, true);
+    erEnApbClkGrp(kaeClk, u32GetArrSz(kaeClk));
+    erCfgPinGrp(katPin, u32GetArrSz(katPin));
+    erCfgIntrGrp(atIntr, u32GetArrSz(atIntr));
 
     while(1)
     {

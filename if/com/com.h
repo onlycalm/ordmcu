@@ -20,7 +20,7 @@ extern "C"
 #include "typ.h"
 
 #define SetBit(Var, Msk) ((Var) |= (Msk))
-#define ClrBit(Var, Msk) ((Var) &= ~(Msk))
+#define RstBit(Var, Msk) ((Var) &= ~(Msk))
 #define RdBit(Var, Msk) ((Var) & (Msk))
 
 #if DEBUG

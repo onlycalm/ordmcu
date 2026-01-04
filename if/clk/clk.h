@@ -21,10 +21,10 @@ typedef enum
     CLK_PT_I,
     CLK_PT_J,
     CLK_PT_K,
-} EClkPt;
+} EApbClk;
 
-extern er erSetClkPt(const EClkPt keClkPt);
-extern er erSetClkPtGrp(const EClkPt* const kpkeClkPt, const u8 ku8ArrSz);
+extern er erEnApbClk(const EApbClk keApbClk, bl bEn);
+extern er erEnApbClkGrp(const EApbClk* const kpkeApbClk, const u8 ku8ArrSz);
 
 #ifdef __cplusplus
 }

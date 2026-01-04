@@ -83,7 +83,7 @@ static u32 s_au32SpdMap[] =
     GPIO_SPEED_FREQ_HIGH,   // GPIO_SPD_HI
 };
 
-er erInitPin(const TPin ktPin)
+er erCfgPin(const TPin ktPin)
 {
     GPIO_InitTypeDef tPt = {0};
     er erRtn = ER_SW_UNKN;
@@ -116,7 +116,7 @@ er erInitPin(const TPin ktPin)
     return erRtn;
 }
 
-er erInitPinGrp(const TPin* const kpktPin, const u16 ku16ArrSz)
+er erCfgPinGrp(const TPin* const kpktPin, const u16 ku16ArrSz)
 {
     u16 u16Idx = 0u;
     er erRtn = ER_SUC;
@@ -128,7 +128,7 @@ er erInitPinGrp(const TPin* const kpktPin, const u16 ku16ArrSz)
     {
         for(u16Idx = 0u; (u16Idx < ku16ArrSz) && (erRtn == ER_SUC); u16Idx++)
         {
-            erRtn = erInitPin(kpktPin[u16Idx]);
+            erRtn = erCfgPin(kpktPin[u16Idx]);
         }
     }
     else

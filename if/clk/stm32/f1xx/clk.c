@@ -1,4 +1,5 @@
 #include "clk.h"
+#include <stdbool.h>
 
 #ifdef __CLK_H__
 
@@ -9,7 +10,7 @@
 
 #define ER_MOD ER_MOD_CLK
 
-static u32 s_au32ClkPtEn[] =
+static u32 s_au32ApbClk[] =
 {
     RCC_APB2ENR_IOPAEN,
     RCC_APB2ENR_IOPBEN,
@@ -20,15 +21,23 @@ static u32 s_au32ClkPtEn[] =
     RCC_APB2ENR_IOPGEN,
 };
 
-er erSetClkPt(const EClkPt keClkPt)
+er erEnApbClk(const EApbClk keApbClk, bl bEn)
 {
     er erRtn = ER_SW_UNKN;
 
-    Asrt((u32)keClkPt < u32GetArrSz(s_au32ClkPtEn));
+    Asrt((u32)keApbClk < u32GetArrSz(s_au32ApbClk));
 
-    if((u32)keClkPt < u32GetArrSz(s_au32ClkPtEn))
+    if((u32)keApbClk < u32GetArrSz(s_au32ApbClk))
     {
-        SetBit(RCC->APB2ENR, s_au32ClkPtEn[keClkPt]);
+        if(bEn)
+        {
+            SetBit(RCC->APB2ENR, s_au32ApbClk[keApbClk]); // To do: 统一AHB, APB1, APB2配置。
+        }
+        else
+        {
+            RstBit(RCC->APB2ENR, s_au32ApbClk[keApbClk]);
+        }
+
         erRtn = ER_SUC;
     }
     else
@@ -39,19 +48,19 @@ er erSetClkPt(const EClkPt keClkPt)
     return erRtn;
 }
 
-er erSetClkPtGrp(const EClkPt* const kpkeClkPt, const u8 ku8ArrSz)
+er erEnApbClkGrp(const EApbClk* const kpkeApbClk, const u8 ku8ArrSz)
 {
     u8 u8Idx = 0u;
     er erRtn = ER_SUC;
 
-    Asrt(kpkeClkPt != NULL);
+    Asrt(kpkeApbClk != NULL);
     Asrt(ku8ArrSz > 0u);
 
-    if((kpkeClkPt != NULL) && (ku8ArrSz > 0u))
+    if((kpkeApbClk != NULL) && (ku8ArrSz > 0u))
     {
         for(u8Idx = 0u; (u8Idx < ku8ArrSz) && (erRtn == ER_SUC); u8Idx++)
         {
-            erRtn = erSetClkPt(kpkeClkPt[u8Idx]);
+            erRtn = erEnApbClk(kpkeApbClk[u8Idx], true);
         }
     }
     else

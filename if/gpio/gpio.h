@@ -118,8 +118,8 @@ typedef struct
     EPinSpd eSpd;
 } TPin;
 
-extern er erInitPin(const TPin ktPin);
-extern er erInitPinGrp(const TPin* const kpktPin, const u16 ku16ArSz);
+extern er erCfgPin(const TPin ktPin);
+extern er erCfgPinGrp(const TPin* const kpktPin, const u16 ku16ArSz);
 extern er erGetPinLv(const EPt kePt, const EPin kePin, EPinLv* const kpkePinLv);
 extern er erSetPinLv(const EPt kePt, const EPin kePin, const EPinLv kePinLv);
 extern er erTglPinLv(const EPt kePt, const EPin kePin);
