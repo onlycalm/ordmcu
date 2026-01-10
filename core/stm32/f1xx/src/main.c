@@ -1,9 +1,12 @@
+#include <stdbool.h>
 #include <stdint.h>
-#include "com.h"
+#include "typ.h"
 #include "err.h"
+#include "com.h"
 #include "main.h"
 #include "gpio.h"
 #include "clk.h"
+#include "intr.h"
 #include "stm32f1xx_hal_gpio.h"
 
 void SystemClock_Config(void);
@@ -65,22 +68,25 @@ int main(void)
             .eSpd = PIN_SPD_LW,
         },
     };
-    const EClkPt kaeClkPt[] =
+    const EClk kaeClk[] =
     {
         CLK_PT_A,
         CLK_PT_B,
         CLK_PT_E,
     };
+    const TIntr atIntr[] =
+    {
+        {true, INTR_NUM_PIN0, 0u, 0u},
+    };
 
-    __enable_irq();
+    erEnAlIntr(true);
+    erSetIntrPriMode(INTR_PRI_MOD4);
     HAL_Init();
     SystemClock_Config();
 
-    erSetClkPtGrp(kaeClkPt, u32GetArrSz(kaeClkPt));
-    erInitPinGrp(katPin, u32GetArrSz(katPin));
-
-    HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 1);
-    HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+    erEnClkGrp(kaeClk, u32GetArrSz(kaeClk));
+    erCfgPinGrp(katPin, u32GetArrSz(katPin));
+    erCfgIntrGrp(atIntr, u32GetArrSz(atIntr));
 
     while(1)
     {

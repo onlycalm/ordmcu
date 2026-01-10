@@ -161,6 +161,7 @@ typedef enum
     ER_MOD_GPIO, // Gpio module.
     ER_MOD_CLK,  // Clk module.
     ER_MOD_COM,  // Common module.
+    ER_MOD_INTR, // Intr module.
 } EErMod;
 
 typedef enum
