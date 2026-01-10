@@ -68,7 +68,7 @@ int main(void)
             .eSpd = PIN_SPD_LW,
         },
     };
-    const EApbClk kaeClk[] =
+    const EClk kaeClk[] =
     {
         CLK_PT_A,
         CLK_PT_B,
@@ -84,7 +84,7 @@ int main(void)
     HAL_Init();
     SystemClock_Config();
 
-    erEnApbClkGrp(kaeClk, u32GetArrSz(kaeClk));
+    erEnClkGrp(kaeClk, u32GetArrSz(kaeClk));
     erCfgPinGrp(katPin, u32GetArrSz(katPin));
     erCfgIntrGrp(atIntr, u32GetArrSz(atIntr));
 

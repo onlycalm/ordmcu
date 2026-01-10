@@ -39,6 +39,8 @@ extern "C"
 #define u32GetArrSz(aArr) ((u32)(sizeof((aArr)) / sizeof((aArr)[0])))
 #define u32GetBySz(Var) ((u32)sizeof((Var)))
 
+#define Reg32(u32Adr) *(u32*)(u32Adr)
+
 FORCE_INLINE
 void vidWrReg32(u32 u32Adr, u32 u32Val)
 {
